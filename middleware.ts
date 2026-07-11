@@ -1,23 +1,29 @@
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 type CookieToSet = {
   name: string;
   value: string;
-  options?: Record<string, unknown>;
+  options?: CookieOptions;
 };
+
+const PROJECT_URL =
+  process.env.NEXT_PUBLIC_SUPABASE_URL ||
+  "https://popbipbawdgqoyqptehe.supabase.co";
+
+const PUBLIC_KEY =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  "";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!url || !key) {
+  if (!PUBLIC_KEY) {
     return response;
   }
 
-  const supabase = createServerClient(url, key, {
+  const supabase = createServerClient(PROJECT_URL, PUBLIC_KEY, {
     cookies: {
       getAll() {
         return request.cookies.getAll();
@@ -41,26 +47,26 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const pathname = request.nextUrl.pathname;
-  const isPublicRoute = pathname === "/login";
-  const isAsset =
+  const isLogin = pathname === "/login";
+  const isPublicAsset =
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
     pathname.includes(".");
 
-  if (isAsset) return response;
+  if (isPublicAsset) return response;
 
-  if (!user && !isPublicRoute) {
+  if (!user && !isLogin) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  if (user && isPublicRoute) {
-    const dashboardUrl = request.nextUrl.clone();
-    dashboardUrl.pathname = "/";
-    dashboardUrl.search = "";
-    return NextResponse.redirect(dashboardUrl);
+  if (user && isLogin) {
+    const homeUrl = request.nextUrl.clone();
+    homeUrl.pathname = "/";
+    homeUrl.search = "";
+    return NextResponse.redirect(homeUrl);
   }
 
   return response;

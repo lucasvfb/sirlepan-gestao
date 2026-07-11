@@ -45,3 +45,17 @@ Importe este repositório na Vercel e configure as mesmas variáveis de ambiente
 ## Segurança
 
 A versão 5 protege automaticamente todas as páginas do sistema. Usuários não autenticados são enviados para `/login`.
+
+
+## Configuração recomendada na Vercel — versão 6
+
+Cadastre estas variáveis no ambiente **Production**:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://popbipbawdgqoyqptehe.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+```
+
+A versão 6 também aceita `NEXT_PUBLIC_SUPABASE_ANON_KEY` por compatibilidade, mas o nome recomendado para os projetos novos do Supabase é `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+
+Depois de salvar, faça um novo deploy. A rota `/configuracao` mostra se a chave foi encontrada e testa a conexão com a tabela `lojas`.

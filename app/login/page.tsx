@@ -77,9 +77,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <small className="login-ajuda">
-          Os usuários são cadastrados pelo administrador no Supabase.
-        </small>
+        <small className="login-ajuda">Os usuários são cadastrados pelo administrador no Supabase. <a href="/configuracao">Ver diagnóstico</a></small>
       </section>
     </main>
   );

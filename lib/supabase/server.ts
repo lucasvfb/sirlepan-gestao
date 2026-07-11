@@ -1,19 +1,21 @@
 import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { getSupabasePublicConfig } from "./env";
 
 type CookieToSet = {
   name: string;
   value: string;
-  options?: Record<string, unknown>;
+  options?: CookieOptions;
 };
 
 export async function createServerSupabaseClient() {
   const cookieStore = await cookies();
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const { url, key, configured } = getSupabasePublicConfig();
 
-  if (!url || !key) {
-    throw new Error("As variáveis do Supabase não foram configuradas.");
+  if (!configured) {
+    throw new Error(
+      "A chave pública do Supabase não foi configurada na Vercel."
+    );
   }
 
   return createServerClient(url, key, {
@@ -27,7 +29,7 @@ export async function createServerSupabaseClient() {
             cookieStore.set(name, value, options)
           );
         } catch {
-          // Em Server Components, a escrita pode não estar disponível.
+          // A escrita de cookies não está disponível em todos os Server Components.
         }
       }
     }
