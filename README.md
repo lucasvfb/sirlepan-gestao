@@ -59,3 +59,14 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 A versão 6 também aceita `NEXT_PUBLIC_SUPABASE_ANON_KEY` por compatibilidade, mas o nome recomendado para os projetos novos do Supabase é `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
 
 Depois de salvar, faça um novo deploy. A rota `/configuracao` mostra se a chave foi encontrada e testa a conexão com a tabela `lojas`.
+
+
+## Correção 6.1
+
+Esta versão normaliza automaticamente a URL do Supabase. Ela aceita:
+
+- URL completa;
+- Project ID;
+- valor colado com caminhos extras.
+
+O login agora usa diretamente `@supabase/supabase-js`, reduzindo problemas de URL no navegador.

@@ -7,14 +7,35 @@ type CookieToSet = {
   options?: CookieOptions;
 };
 
-const PROJECT_URL =
-  process.env.NEXT_PUBLIC_SUPABASE_URL ||
-  "https://popbipbawdgqoyqptehe.supabase.co";
+function normalizeSupabaseUrl(rawValue?: string) {
+  const fallbackRef = "popbipbawdgqoyqptehe";
+  const raw = (rawValue || "").trim();
 
-const PUBLIC_KEY =
+  const refMatch = raw.match(/([a-z0-9]{15,30})\.supabase\.co/i);
+  if (refMatch?.[1]) {
+    return `https://${refMatch[1].toLowerCase()}.supabase.co`;
+  }
+
+  const cleanRef = raw
+    .replace(/^https?:\/\//i, "")
+    .replace(/\.supabase\.co.*$/i, "")
+    .replace(/[^a-z0-9]/gi, "")
+    .toLowerCase();
+
+  return /^[a-z0-9]{15,30}$/.test(cleanRef)
+    ? `https://${cleanRef}.supabase.co`
+    : `https://${fallbackRef}.supabase.co`;
+}
+
+const PROJECT_URL = normalizeSupabaseUrl(
+  process.env.NEXT_PUBLIC_SUPABASE_URL
+);
+
+const PUBLIC_KEY = (
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  "";
+  ""
+).trim();
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -48,12 +69,13 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
   const isLogin = pathname === "/login";
+  const isConfig = pathname === "/configuracao";
   const isPublicAsset =
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
     pathname.includes(".");
 
-  if (isPublicAsset) return response;
+  if (isPublicAsset || isConfig) return response;
 
   if (!user && !isLogin) {
     const loginUrl = request.nextUrl.clone();

@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getSupabasePublicConfig } from "@/lib/supabase/env";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -15,9 +16,19 @@ export default function LoginPage() {
     setCarregando(true);
 
     try {
+      const { url, configured } = getSupabasePublicConfig();
+
+      if (!configured) {
+        throw new Error("A chave pública do Supabase não foi configurada.");
+      }
+
+      if (!url.startsWith("https://") || !url.endsWith(".supabase.co")) {
+        throw new Error(`URL inválida do Supabase: ${url}`);
+      }
+
       const supabase = createClient();
       const { error } = await supabase.auth.signInWithPassword({
-        email,
+        email: email.trim(),
         password: senha
       });
 
@@ -77,7 +88,10 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <small className="login-ajuda">Os usuários são cadastrados pelo administrador no Supabase. <a href="/configuracao">Ver diagnóstico</a></small>
+        <small className="login-ajuda">
+          Os usuários são cadastrados pelo administrador no Supabase.{" "}
+          <a href="/configuracao">Ver diagnóstico</a>
+        </small>
       </section>
     </main>
   );
