@@ -1,0 +1,20 @@
+.compras-page{min-height:100vh;background:#f6f3ef;padding:28px;color:#231f20}
+.compras-topo,.compras-page form{max-width:1380px;margin:auto}
+.compras-topo{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:20px}
+.compras-topo a{color:#7a1025;text-decoration:none;font-weight:700}.compras-topo h1{margin:8px 0 4px}.compras-topo p{margin:0;color:#706569}
+.total-card{min-width:210px;background:linear-gradient(135deg,#4e0917,#7a1025);color:#fff;padding:16px 20px;border-radius:15px}
+.total-card span{display:block;opacity:.75;font-size:13px}.total-card strong{display:block;font-size:26px;margin-top:5px}
+.compra-card{background:#fff;border:1px solid #e7ded6;border-radius:16px;padding:20px;margin-bottom:18px;box-shadow:0 8px 24px rgba(61,32,35,.05)}
+.compra-card h2{font-size:19px;margin:0 0 16px}.dados-grid{display:grid;grid-template-columns:1fr 1.4fr .7fr 1fr;gap:14px}
+.compras-page label{display:grid;gap:7px;font-size:13px;font-weight:700;color:#514649}
+.compras-page input,.compras-page select{width:100%;min-height:42px;padding:9px 11px;border:1px solid #d9cdca;border-radius:9px;background:#fff}
+.linha-titulo{display:flex;justify-content:space-between;align-items:center;gap:14px}.linha-titulo h2{margin:0}
+.secundario,.principal{border:0;border-radius:10px;cursor:pointer;font-weight:700}.secundario{padding:10px 13px;background:#f7e9ec;color:#7a1025}.principal{padding:13px 22px;background:#7a1025;color:#fff;font-size:15px}
+.itens{display:grid;gap:12px;margin-top:16px}.item{display:grid;grid-template-columns:minmax(240px,2fr) .6fr .55fr .8fr .8fr 36px;gap:10px;align-items:end;padding:14px;background:#fdfbf9;border:1px solid #eee4de;border-radius:12px}
+.subtotal{padding-bottom:8px}.subtotal span{display:block;font-size:12px;color:#776b6e}.subtotal strong{display:block;margin-top:5px}
+.remover{height:42px;border:0;border-radius:9px;background:#fff0f2;color:#a21f39;font-size:22px;cursor:pointer}
+.resumo{display:grid;grid-template-columns:1fr 360px;gap:30px}.ajustes{display:grid;grid-template-columns:repeat(2,minmax(140px,220px));gap:14px;align-content:start}
+.valores{display:grid;gap:9px}.valores>div{display:flex;justify-content:space-between;gap:20px}.final{margin-top:7px;padding-top:12px;border-top:1px solid #e5dcd7;color:#7a1025;font-size:19px}
+.msg{padding:12px 15px;border-radius:10px;margin-bottom:15px}.erro{color:#941d34;background:#fff0f3;border:1px solid #f0cbd3}.sucesso{color:#246b38;background:#eaf7ed;border:1px solid #c9e8d1}.acoes{display:flex;justify-content:flex-end}
+@media(max-width:1000px){.dados-grid{grid-template-columns:1fr 1fr}.item{grid-template-columns:1fr 1fr 1fr}.produto{grid-column:span 2}.resumo{grid-template-columns:1fr}}
+@media(max-width:620px){.compras-page{padding:18px}.compras-topo{flex-direction:column;align-items:stretch}.dados-grid,.item,.ajustes{grid-template-columns:1fr}.produto{grid-column:auto}.linha-titulo{align-items:stretch;flex-direction:column}}
