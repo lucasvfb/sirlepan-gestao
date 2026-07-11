@@ -70,3 +70,8 @@ Esta versão normaliza automaticamente a URL do Supabase. Ela aceita:
 - valor colado com caminhos extras.
 
 O login agora usa diretamente `@supabase/supabase-js`, reduzindo problemas de URL no navegador.
+
+
+## Correção 6.2
+
+A sessão agora é gravada em cookies usando `createBrowserClient`, permitindo que o middleware reconheça o login.

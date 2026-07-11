@@ -16,28 +16,30 @@ export default function LoginPage() {
     setCarregando(true);
 
     try {
-      const { url, configured } = getSupabasePublicConfig();
+      const { configured } = getSupabasePublicConfig();
 
       if (!configured) {
         throw new Error("A chave pública do Supabase não foi configurada.");
       }
 
-      if (!url.startsWith("https://") || !url.endsWith(".supabase.co")) {
-        throw new Error(`URL inválida do Supabase: ${url}`);
-      }
-
       const supabase = createClient();
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password: senha
       });
 
       if (error) throw error;
+      if (!data.session) {
+        throw new Error("O Supabase não retornou uma sessão de acesso.");
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 300));
 
       const params = new URLSearchParams(window.location.search);
       const redirect = params.get("redirect");
-      window.location.href =
-        redirect && redirect.startsWith("/") ? redirect : "/";
+      const destino = redirect && redirect.startsWith("/") ? redirect : "/";
+
+      window.location.assign(destino);
     } catch (error) {
       setErro(
         error instanceof Error
