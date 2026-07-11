@@ -1,11 +1,9 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
-  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
@@ -25,8 +23,10 @@ export default function LoginPage() {
 
       if (error) throw error;
 
-      const redirect = searchParams.get("redirect");
-      window.location.href = redirect && redirect.startsWith("/") ? redirect : "/";
+      const params = new URLSearchParams(window.location.search);
+      const redirect = params.get("redirect");
+      window.location.href =
+        redirect && redirect.startsWith("/") ? redirect : "/";
     } catch (error) {
       setErro(
         error instanceof Error
@@ -53,7 +53,7 @@ export default function LoginPage() {
               type="email"
               autoComplete="email"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={event => setEmail(event.target.value)}
               required
             />
           </div>
@@ -65,7 +65,7 @@ export default function LoginPage() {
               type="password"
               autoComplete="current-password"
               value={senha}
-              onChange={e => setSenha(e.target.value)}
+              onChange={event => setSenha(event.target.value)}
               required
             />
           </div>
