@@ -130,7 +130,7 @@ export default function ProdutosPage() {
     <main className="produtos-page">
       <header className="produtos-topo">
         <div>
-          <Link href="/">← Dashboard</Link>
+          <Link href="/">← Dashboard</Link><Link className="sair-link" href="/logout">Sair</Link>
           <h1>Produtos</h1>
           <p>Cadastre os itens comprados e acompanhe custos e preços de venda.</p>
         </div>

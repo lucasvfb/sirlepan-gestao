@@ -76,3 +76,14 @@ th { background: #fbf8f5; color: #6b5f62; }
 .variacao-item strong{display:block}.variacao-item span{display:block;color:#776d70;font-size:12px;margin-top:4px}
 .variacao-item b{font-size:14px}.variacao-item b.subiu{color:#a2233e}.variacao-item b.caiu{color:#26743e}
 @media(max-width:1000px){.dashboard-duplo{grid-template-columns:1fr}}
+
+
+.login-marca{
+  width:54px;height:54px;border-radius:16px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--vinho-escuro),var(--vinho));
+  color:#fff;font-size:28px;font-weight:900;margin-bottom:16px
+}
+.login-botao{width:100%;min-height:44px}
+.login-ajuda{display:block;margin-top:18px;color:#7a6f72;line-height:1.5}
+.sair-link{margin-left:14px;color:#7a1025;text-decoration:none;font-weight:700}

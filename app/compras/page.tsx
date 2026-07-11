@@ -127,7 +127,7 @@ export default function ComprasPage() {
     <main className="compras-page">
       <header className="compras-topo">
         <div>
-          <Link href="/">← Dashboard</Link>
+          <Link href="/">← Dashboard</Link><Link className="sair-link" href="/logout">Sair</Link>
           <h1>Nova compra</h1>
           <p>Registre os produtos recebidos e atualize os custos automaticamente.</p>
         </div>

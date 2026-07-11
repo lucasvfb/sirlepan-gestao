@@ -65,7 +65,7 @@ export default function RelatoriosPage() {
     <main className="relatorios-page">
       <header className="relatorios-topo">
         <div>
-          <Link href="/">← Dashboard</Link>
+          <Link href="/">← Dashboard</Link><Link className="sair-link" href="/logout">Sair</Link>
           <h1>Relatórios</h1>
           <p>Acompanhe a evolução dos preços dos produtos comprados.</p>
         </div>

@@ -93,7 +93,7 @@ export default function FornecedoresPage() {
   return (
     <main className="fornecedores-page">
       <header className="fornecedores-topo">
-        <div><Link href="/">← Dashboard</Link><h1>Fornecedores</h1><p>Centralize os contatos e os dados de quem abastece a Sirlepan.</p></div>
+        <div><Link href="/">← Dashboard</Link><Link className="sair-link" href="/logout">Sair</Link><h1>Fornecedores</h1><p>Centralize os contatos e os dados de quem abastece a Sirlepan.</p></div>
         <div className="contador">{lista.filter(f => f.ativo).length} ativos</div>
       </header>
 

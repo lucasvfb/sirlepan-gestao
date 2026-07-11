@@ -125,7 +125,7 @@ export default function Home() {
           <Link href="/produtos">Produtos</Link>
           <Link href="/fornecedores">Fornecedores</Link>
           <Link href="/relatorios">Relatórios</Link>
-          <Link href="/login">Entrar</Link>
+          <Link href="/logout">Sair</Link>
         </nav>
       </aside>
 
