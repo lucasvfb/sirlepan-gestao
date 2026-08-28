@@ -1,140 +1,16 @@
 "use client";
+import {useEffect,useMemo,useState} from "react";
+import AppShell from "@/components/AppShell";
+import {supabase} from "@/lib/supabase";
 
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import "./relatorios.css";
-
-type Historico = {
-  id: string;
-  preco_anterior: number | null;
-  preco_novo: number;
-  variacao_percentual: number | null;
-  data_registro: string;
-  produtos: { nome: string } | null;
-  fornecedores: { nome: string } | null;
-  lojas: { nome: string } | null;
-};
-
-const brl = (v: number) =>
-  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v || 0);
-
-export default function RelatoriosPage() {
-  const [dados, setDados] = useState<Historico[]>([]);
-  const [busca, setBusca] = useState("");
-  const [erro, setErro] = useState("");
-
-  useEffect(() => {
-    async function carregar() {
-      try {
-        const supabase = createClient();
-        const { data, error } = await supabase
-          .from("historico_precos")
-          .select("id,preco_anterior,preco_novo,variacao_percentual,data_registro,produtos(nome),fornecedores(nome),lojas(nome)")
-          .order("data_registro", { ascending: false })
-          .limit(200);
-        if (error) throw error;
-        setDados((data ?? []) as unknown as Historico[]);
-      } catch (e) {
-        setErro(e instanceof Error ? e.message : "Não foi possível carregar o relatório.");
-      }
-    }
-    carregar();
-  }, []);
-
-  const filtrados = useMemo(() => {
-    const termo = busca.trim().toLowerCase();
-    if (!termo) return dados;
-    return dados.filter(item =>
-      [item.produtos?.nome ?? "", item.fornecedores?.nome ?? "", item.lojas?.nome ?? ""]
-        .some(valor => valor.toLowerCase().includes(termo))
-    );
-  }, [dados, busca]);
-
-  const maioresAltas = [...filtrados]
-    .filter(i => Number(i.variacao_percentual || 0) > 0)
-    .sort((a, b) => Number(b.variacao_percentual || 0) - Number(a.variacao_percentual || 0))
-    .slice(0, 5);
-
-  const maioresQuedas = [...filtrados]
-    .filter(i => Number(i.variacao_percentual || 0) < 0)
-    .sort((a, b) => Number(a.variacao_percentual || 0) - Number(b.variacao_percentual || 0))
-    .slice(0, 5);
-
-  return (
-    <main className="relatorios-page">
-      <header className="relatorios-topo">
-        <div>
-          <Link href="/">← Dashboard</Link><Link className="sair-link" href="/logout">Sair</Link>
-          <h1>Relatórios</h1>
-          <p>Acompanhe a evolução dos preços dos produtos comprados.</p>
-        </div>
-        <input value={busca} onChange={e => setBusca(e.target.value)} placeholder="Pesquisar produto, fornecedor ou loja..." />
-      </header>
-
-      {erro && <div className="relatorio-msg">{erro}</div>}
-
-      <section className="relatorios-grid">
-        <article className="relatorio-card">
-          <h2>Maiores aumentos</h2>
-          {maioresAltas.length === 0 ? <p>Sem dados.</p> : maioresAltas.map(item => (
-            <div className="ranking-item" key={item.id}>
-              <span>{item.produtos?.nome ?? "Produto"}</span>
-              <strong className="alta">+{Number(item.variacao_percentual).toFixed(1)}%</strong>
-            </div>
-          ))}
-        </article>
-
-        <article className="relatorio-card">
-          <h2>Maiores reduções</h2>
-          {maioresQuedas.length === 0 ? <p>Sem dados.</p> : maioresQuedas.map(item => (
-            <div className="ranking-item" key={item.id}>
-              <span>{item.produtos?.nome ?? "Produto"}</span>
-              <strong className="queda">{Number(item.variacao_percentual).toFixed(1)}%</strong>
-            </div>
-          ))}
-        </article>
-      </section>
-
-      <section className="relatorio-card">
-        <h2>Histórico de preços</h2>
-        <div className="relatorio-tabela">
-          <table>
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Produto</th>
-                <th>Fornecedor</th>
-                <th>Loja</th>
-                <th>Preço anterior</th>
-                <th>Novo preço</th>
-                <th>Variação</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtrados.map(item => {
-                const variacao = Number(item.variacao_percentual || 0);
-                return (
-                  <tr key={item.id}>
-                    <td>{new Date(item.data_registro).toLocaleDateString("pt-BR")}</td>
-                    <td><strong>{item.produtos?.nome ?? "—"}</strong></td>
-                    <td>{item.fornecedores?.nome ?? "—"}</td>
-                    <td>{item.lojas?.nome ?? "—"}</td>
-                    <td>{brl(Number(item.preco_anterior || 0))}</td>
-                    <td>{brl(Number(item.preco_novo))}</td>
-                    <td>
-                      <span className={`variacao-badge ${variacao > 0 ? "alta" : variacao < 0 ? "queda" : ""}`}>
-                        {variacao > 0 ? "+" : ""}{variacao.toFixed(1)}%
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          {filtrados.length === 0 && <div className="relatorio-vazio">Nenhum registro encontrado.</div>}
-        </div>
-      </section>
-    </main>
-  );
+type Unit={id:string;name:string};type Rev={unit_id:string;revenue_date:string;cash:number;pix:number;debit:number;credit:number;delivery:number;others:number};type Entry={unit_id:string;entry_type:string;amount:number;status:string};type Move={unit_id:string;item_id:string;quantity:number;movement_type:string};type Transfer={id:string;status:string;transfer_date:string};type Order={id:string;status:string;pickup_at:string;total_amount:number;deposit_amount:number};
+const brl=(v:number)=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(v||0);
+export default function Relatorios(){
+ const[units,setUnits]=useState<Unit[]>([]),[revs,setRevs]=useState<Rev[]>([]),[entries,setEntries]=useState<Entry[]>([]),[moves,setMoves]=useState<Move[]>([]),[transfers,setTransfers]=useState<Transfer[]>([]),[orders,setOrders]=useState<Order[]>([]),[erro,setErro]=useState("");
+ useEffect(()=>{(async()=>{try{const[u,r,e,m,t,o]=await Promise.all([supabase.from("erp_units").select("id,name").eq("active",true),supabase.from("erp_daily_revenue").select("unit_id,revenue_date,cash,pix,debit,credit,delivery,others").order("revenue_date",{ascending:false}).limit(365),supabase.from("erp_financial_entries").select("unit_id,entry_type,amount,status").neq("status","cancelled"),supabase.from("erp_stock_movements").select("unit_id,item_id,quantity,movement_type").limit(5000),supabase.from("erp_transfers").select("id,status,transfer_date").order("transfer_date",{ascending:false}).limit(100),supabase.from("erp_orders").select("id,status,pickup_at,total_amount,deposit_amount").order("pickup_at",{ascending:false}).limit(100)]);const f=u.error||r.error||e.error||m.error||t.error||o.error;if(f)throw f;setUnits((u.data??[]) as Unit[]);setRevs((r.data??[]) as Rev[]);setEntries((e.data??[]) as Entry[]);setMoves((m.data??[]) as Move[]);setTransfers((t.data??[]) as Transfer[]);setOrders((o.data??[]) as Order[])}catch(e){setErro(e instanceof Error?e.message:"Erro ao carregar relatórios.")}})()},[]);
+ const unitReport=useMemo(()=>units.map(u=>{const faturamento=revs.filter(r=>r.unit_id===u.id).reduce((s,r)=>s+[r.cash,r.pix,r.debit,r.credit,r.delivery,r.others].reduce((a,b)=>a+Number(b||0),0),0);const despesas=entries.filter(e=>e.unit_id===u.id&&e.entry_type==="expense"&&e.status==="paid").reduce((s,e)=>s+Number(e.amount||0),0);const stock=moves.filter(m=>m.unit_id===u.id).reduce((s,m)=>s+Number(m.quantity||0),0);return{...u,faturamento,despesas,stock}}),[units,revs,entries,moves]);
+ return <AppShell><div className="topbar"><div><h1>Relatórios</h1><div className="subtitle">Visão gerencial por unidade e consolidada.</div></div></div>{erro&&<div className="notice error">{erro}</div>}
+ <section className="section"><div className="section-head"><h2>Resumo por unidade</h2></div><div className="table-wrap"><table className="table"><thead><tr><th>Unidade</th><th>Faturamento</th><th>Despesas pagas</th><th>Resultado simples</th><th>Saldo líquido de movimentos</th></tr></thead><tbody>{unitReport.map(x=><tr key={x.id}><td><strong>{x.name}</strong></td><td>{brl(x.faturamento)}</td><td>{brl(x.despesas)}</td><td>{brl(x.faturamento-x.despesas)}</td><td>{x.stock.toFixed(3)}</td></tr>)}</tbody></table></div></section>
+ <section className="grid4"><div className="card"><div className="metric-label">Transferências registradas</div><div className="metric-value">{transfers.length}</div></div><div className="card"><div className="metric-label">Transferências pendentes</div><div className="metric-value">{transfers.filter(x=>x.status!=="received").length}</div></div><div className="card"><div className="metric-label">Encomendas registradas</div><div className="metric-value">{orders.length}</div></div><div className="card"><div className="metric-label">Saldo pendente encomendas</div><div className="metric-value">{brl(orders.filter(x=>x.status!=="cancelled"&&x.status!=="delivered").reduce((s,x)=>s+Number(x.total_amount)-Number(x.deposit_amount),0))}</div></div></section>
+ </AppShell>
 }
