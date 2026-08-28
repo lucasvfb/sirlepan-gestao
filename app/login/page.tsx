@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { LockKeyhole, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { getSupabasePublicConfig } from "@/lib/supabase/env";
 
@@ -17,28 +18,21 @@ export default function LoginPage() {
 
     try {
       const { configured } = getSupabasePublicConfig();
-
-      if (!configured) {
-        throw new Error("A chave pública do Supabase não foi configurada.");
-      }
+      if (!configured) throw new Error("A chave pública do Supabase não foi configurada.");
 
       const supabase = createClient();
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
-        password: senha
+        password: senha,
       });
 
       if (error) throw error;
-      if (!data.session) {
-        throw new Error("O Supabase não retornou uma sessão de acesso.");
-      }
+      if (!data.session) throw new Error("O Supabase não retornou uma sessão de acesso.");
 
-      await new Promise(resolve => setTimeout(resolve, 300));
-
+      await new Promise((resolve) => setTimeout(resolve, 300));
       const params = new URLSearchParams(window.location.search);
       const redirect = params.get("redirect");
       const destino = redirect && redirect.startsWith("/") ? redirect : "/";
-
       window.location.assign(destino);
     } catch (error) {
       setErro(
@@ -55,8 +49,9 @@ export default function LoginPage() {
     <main className="login-page">
       <section className="login-box">
         <div className="login-marca">S</div>
-        <h1>Sirlepan Gestão</h1>
-        <p>Acesso restrito à equipe autorizada.</p>
+        <span className="eyebrow">Gestão interna</span>
+        <h1>ERP Sirlepan</h1>
+        <p>Controle as duas unidades em uma única operação, com dados centralizados e acesso seguro.</p>
 
         <form className="form" onSubmit={entrar}>
           <div>
@@ -65,8 +60,9 @@ export default function LoginPage() {
               id="email"
               type="email"
               autoComplete="email"
+              placeholder="seu@email.com"
               value={email}
-              onChange={event => setEmail(event.target.value)}
+              onChange={(event) => setEmail(event.target.value)}
               required
             />
           </div>
@@ -77,23 +73,28 @@ export default function LoginPage() {
               id="senha"
               type="password"
               autoComplete="current-password"
+              placeholder="Digite sua senha"
               value={senha}
-              onChange={event => setSenha(event.target.value)}
+              onChange={(event) => setSenha(event.target.value)}
               required
             />
           </div>
 
-          {erro && <div className="error">{erro}</div>}
+          {erro && <div className="notice error">{erro}</div>}
 
           <button className="button login-botao" disabled={carregando}>
-            {carregando ? "Entrando..." : "Entrar"}
+            <LockKeyhole size={16} />
+            {carregando ? "Validando acesso..." : "Entrar no ERP"}
           </button>
         </form>
 
-        <small className="login-ajuda">
-          Os usuários são cadastrados pelo administrador no Supabase.{" "}
-          <a href="/configuracao">Ver diagnóstico</a>
-        </small>
+        <div className="login-security">
+          <ShieldCheck size={16} />
+          <div>
+            <strong>Acesso administrativo protegido</strong>
+            <span>Sessão autenticada e dados protegidos por políticas de acesso.</span>
+          </div>
+        </div>
       </section>
     </main>
   );
