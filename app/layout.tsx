@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Sirlepan Gestão",
-  description: "Controle de compras, custos e fornecedores da Sirlepan"
+  title: "ERP Sirlepan",
+  description: "ERP de gestão interna da Sirlepan para financeiro, compras, estoque, produção, pessoas, encomendas e relatórios."
 };
 
 export default function RootLayout({
