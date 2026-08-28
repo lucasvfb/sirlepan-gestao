@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./polish.css";
+import "./ux-refinement.css";
 
 export const metadata: Metadata = {
   title: "ERP Sirlepan",
