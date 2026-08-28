@@ -2,14 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import {
-  ArrowRight,
-  Boxes,
-  ClipboardList,
-  Factory,
-  HandCoins,
-  ShoppingCart,
-} from "lucide-react";
+import { ArrowRight, Boxes, Factory, HandCoins, ShoppingCart } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import { supabase } from "@/lib/supabase";
 
@@ -38,7 +31,7 @@ export default function Dashboard() {
         ini.setDate(1);
         const start = ini.toISOString().slice(0, 10);
         const [u, r, e, p, s, t, o] = await Promise.all([
-          supabase.from("erp_units\").select("id,name,type").eq("active", true).order("name"),
+          supabase.from("erp_units").select("id,name,type").eq("active", true).order("name"),
           supabase.from("erp_daily_revenue").select("unit_id,revenue_date,cash,pix,debit,credit,delivery,others").gte("revenue_date", start),
           supabase.from("erp_financial_entries").select("amount,entry_type,status,due_date").neq("status", "cancelled"),
           supabase.from("erp_products").select("id", { count: "exact", head: true }).eq("active", true),
