@@ -7,11 +7,16 @@ import { supabase, supabaseConfigured } from "@/lib/supabase";
 
 const links = [
   ["/", "Dashboard"],
+  ["/financeiro", "Financeiro"],
   ["/compras", "Compras"],
+  ["/estoque", "Estoque"],
+  ["/producao", "Produção"],
   ["/produtos", "Produtos"],
   ["/fornecedores", "Fornecedores"],
+  ["/pessoas", "Pessoas"],
+  ["/encomendas", "Encomendas"],
   ["/relatorios", "Relatórios"],
-  ["/configuracoes", "Configurações"]
+  ["/configuracao", "Configurações"]
 ];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -22,7 +27,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let ativo = true;
-
     async function verificarSessao() {
       if (!supabaseConfigured()) {
         if (ativo) {
@@ -31,43 +35,25 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         }
         return;
       }
-
       try {
         const resultado = await Promise.race([
           supabase.auth.getSession(),
-          new Promise<never>((_, rejeitar) =>
-            setTimeout(
-              () => rejeitar(new Error("O Supabase demorou demais para responder.")),
-              8000
-            )
-          )
+          new Promise<never>((_, rejeitar) => setTimeout(() => rejeitar(new Error("O Supabase demorou demais para responder.")), 8000))
         ]);
-
         if (!ativo) return;
-
         if (!resultado.data.session) {
           router.replace("/login");
           return;
         }
-
         setLoading(false);
       } catch (error) {
         if (!ativo) return;
-
-        setErro(
-          error instanceof Error
-            ? error.message
-            : "Não foi possível verificar a sessão."
-        );
+        setErro(error instanceof Error ? error.message : "Não foi possível verificar a sessão.");
         setLoading(false);
       }
     }
-
     verificarSessao();
-
-    return () => {
-      ativo = false;
-    };
+    return () => { ativo = false; };
   }, [pathname, router]);
 
   async function sair() {
@@ -75,69 +61,21 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     router.replace("/login");
   }
 
-  if (loading) {
-    return <div className="empty">Carregando...</div>;
-  }
+  if (loading) return <div className="empty">Carregando ERP...</div>;
+  if (erro) return <main className="login-page"><section className="login-box"><div className="logo-circle">S</div><h1 style={{marginTop:16}}>Não foi possível abrir o ERP</h1><div className="notice error">{erro}</div><button className="button" style={{width:"100%"}} onClick={()=>router.replace("/login")}>Ir para o login</button></section></main>;
 
-  if (erro) {
-    return (
-      <main className="login-page">
-        <section className="login-box">
-          <div className="logo-circle">S</div>
-          <h1 style={{ marginTop: 16 }}>Não foi possível abrir o sistema</h1>
-          <div className="notice error">{erro}</div>
-          <button
-            className="button"
-            style={{ width: "100%" }}
-            onClick={() => router.replace("/login")}
-          >
-            Ir para o login
-          </button>
-        </section>
-      </main>
-    );
-  }
-
-  return (
-    <>
-      <div className="mobile-top">
-        <strong>Sirlepan Gestão</strong>
-        <button className="button ghost" onClick={sair}>
-          Sair
-        </button>
-      </div>
-
-      <div className="shell">
-        <aside className="sidebar">
-          <div className="brand">Sirlepan Gestão</div>
-          <div className="tag">Compras, custos e fornecedores</div>
-
-          <nav className="nav">
-            {links.map(([href, label]) => (
-              <Link
-                key={href}
-                href={href}
-                style={{
-                  background:
-                    pathname === href ? "rgba(255,255,255,.13)" : undefined
-                }}
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
-
-          <button
-            className="button ghost"
-            style={{ marginTop: 24, width: "100%" }}
-            onClick={sair}
-          >
-            Sair
-          </button>
-        </aside>
-
-        <main className="main">{children}</main>
-      </div>
-    </>
-  );
+  return <>
+    <div className="mobile-top"><strong>ERP Sirlepan</strong><button className="button ghost" onClick={sair}>Sair</button></div>
+    <div className="shell">
+      <aside className="sidebar">
+        <div className="brand">ERP Sirlepan</div>
+        <div className="tag">Gestão interna · Fase 1</div>
+        <nav className="nav">
+          {links.map(([href,label]) => <Link key={href} href={href} style={{background: pathname===href ? "rgba(255,255,255,.13)" : undefined}}>{label}</Link>)}
+        </nav>
+        <button className="button ghost" style={{marginTop:24,width:"100%"}} onClick={sair}>Sair</button>
+      </aside>
+      <main className="main">{children}</main>
+    </div>
+  </>;
 }
