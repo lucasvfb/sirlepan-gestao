@@ -26,10 +26,10 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   const pathname = request.nextUrl.pathname;
   const isLogin = pathname === "/login";
-  const isConfig = pathname === "/configuracao";
+  const isConfig = pathname === "/configuracao";\n  const isSupplierResponse = pathname.startsWith("/responder/");
   const isPublicAsset = pathname.startsWith("/_next") || pathname.startsWith("/favicon") || pathname.includes(".");
 
-  if (isPublicAsset || isConfig) return response;
+  if (isPublicAsset || isConfig || isSupplierResponse) return response;
   if (!user && !isLogin) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";

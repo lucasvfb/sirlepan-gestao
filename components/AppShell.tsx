@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   Boxes, Building2, ChevronDown, ClipboardList, Factory, FileBarChart,
-  HandCoins, LayoutDashboard, LogOut, Menu, PackageSearch, Settings,
+  HandCoins, LayoutDashboard, LogOut, Menu, PackageSearch, Settings, FileSpreadsheet,
   ShoppingCart, Store, Users, X
 } from "lucide-react";
 import { supabase, supabaseConfigured } from "@/lib/supabase";
@@ -13,7 +13,7 @@ import { supabase, supabaseConfigured } from "@/lib/supabase";
 const links = [
   { href: "/", label: "Painel", icon: LayoutDashboard },
   { href: "/financeiro", label: "Financeiro", icon: HandCoins },
-  { href: "/compras", label: "Compras", icon: ShoppingCart },
+  { href: "/compras", label: "Compras", icon: ShoppingCart },\n  { href: "/cotacoes", label: "Cotações", icon: FileSpreadsheet },
   { href: "/estoque", label: "Estoque", icon: Boxes },
   { href: "/producao", label: "Produção", icon: Factory },
   { href: "/produtos", label: "Produtos", icon: PackageSearch },
@@ -54,7 +54,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }, [router]);
 
   async function sair() { await supabase.auth.signOut(); router.replace("/login"); }
-  const current = links.find(x => x.href === pathname) ?? links[0];
+  const current = links.find(x => pathname === x.href || (x.href !== "/" && pathname.startsWith(x.href + "/"))) ?? links[0];
 
   if (loading) return <main className="boot-screen"><div className="boot-mark">S</div><strong>ERP Sirlepan</strong></main>;
   if (erro) return <main className="login-page"><section className="login-box"><h1>Não foi possível abrir o sistema</h1><div className="notice error">{erro}</div></section></main>;
